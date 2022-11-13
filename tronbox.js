@@ -12,7 +12,7 @@ Create a .env file (it must be gitignored) containing something like
 
 Then, run the migration with:
 
-  source .env && tronbox migrate --network mainnet
+  source key.env && tronbox migrate --network mainnet
 
       */
       userFeePercentage: 100,
