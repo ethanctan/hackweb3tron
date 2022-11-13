@@ -14,6 +14,11 @@ contract Surveys {
     Survey[] public surveys; // List of surveys
     uint256 idCount = 0;
     
+    address payable contractOwner; // designate contract owner
+    constructor() {
+        contractOwner = payable(msg.sender);
+    }
+    
     function makeSurvey(uint256 surveyLimit) public returns(uint256) {
         
         Survey memory newSurvey = Survey({owner:payable(msg.sender), participants:new address payable[](0), limit:surveyLimit, pool:0});
@@ -25,12 +30,14 @@ contract Surveys {
     function fundSurvey(uint256 id) public payable { // fund reward pool for a survey
     
         require(
-            msg.value > 1 trx,
-            "You must fund your survey with at least 1 TRX"  
+            msg.value > 500 trx,
+            "You must fund your survey with at least 500 TRX"  
         );
         
+        contractOwner.transfer(100 trx); // Pay 100 TRX ($5) to our address for monetization
+        
         if (payable(msg.sender) == surveys[id].owner){
-            surveys[id].pool += msg.value;
+            surveys[id].pool += msg.value - 100 trx;
         } else {
             revert("You do not own any survey of that id.");
         } 
