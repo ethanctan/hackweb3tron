@@ -19,11 +19,15 @@ contract Surveys {
         contractOwner = payable(msg.sender);
     }
     
+    event surveyid(uint _id);
+    event surveyidarray(uint[] _ids);
+    
     function makeSurvey(uint256 surveyLimit) public returns(uint256) {
         
         Survey memory newSurvey = Survey({owner:payable(msg.sender), participants:new address payable[](0), limit:surveyLimit, pool:0});
         surveys.push(newSurvey);
         idCount++;
+        emit surveyid(idCount - 1);
         return idCount - 1;
     }
     
@@ -77,7 +81,23 @@ contract Surveys {
         }
         payable(msg.sender).transfer(surveys[id].pool - totalamount);
         
+        emit surveyid(id);
     }
     
+        function fetchSurveys() public {
+        uint[] memory valid;
+        uint counter;
+        
+        for (uint i = 0; i < surveys.length; i++) {
+            if (surveys[i].limit > surveys[i].participants.length) {
+                valid[counter] = i;
+                counter++;
+            }
+        }
+        
+        emit surveyidarray(valid);
+    }
+    
+
     
 }
